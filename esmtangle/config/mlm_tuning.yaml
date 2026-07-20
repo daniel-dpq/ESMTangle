@@ -1,0 +1,50 @@
+data:
+  data_path: /project/hggroup/puqing/esmknot/data/alphaknot_knotprob0.7_plddt70_length1024_nosimilar.csv
+  feat_dir: /project/hggroup/puqing/esmknot/data/esm_processed_alphaknot
+  cluster_path: /project/hggroup/puqing/esmknot/data/alphaknot_knotprob0.7_plddt70_length1024_nosimilar_clust40.tsv
+  max_chain_length: 512
+  min_cluster_size: 1
+  min_chain_plddt: 70
+  min_knot_prob: 0.7
+  max_loop_percent: 0.5
+  seed: 42
+  val_ratio: 0.02
+
+
+model:
+  name: 'esm3-open' 
+  lora:
+    enabled: True
+    r: 256
+    alpha: 512
+    dropout: 0.1
+
+
+experiment:
+  project: esmknot
+  name: esmknot_${now:Y%Y-M%m-D%d_%H-%M-%S}_r256_knotcore_clust40
+  log_dir:  /project/hggroup/puqing/esmknot/result/${experiment.name}
+  ckpt: null
+  lora_ckpt: null
+
+  global_batch_size: 32
+  accumulate_steps: 2
+  lr: 4e-4          #########
+  epochs: 160
+  adamW_betas: [0.9, 0.95]
+  adamW_weight_decay: 0.01
+
+  save_interval: 4000  
+  eval_interval: 4000
+  log_interval: 400
+
+  mixed_precision: False
+  max_grad_norm: 1.
+  use_wandb: True
+
+
+hydra:
+  run:
+    dir: "${experiment.log_dir}"
+  job:
+    chdir: True
